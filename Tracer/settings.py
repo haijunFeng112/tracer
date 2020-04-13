@@ -101,6 +101,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#腾讯云短信应用的app_id
+TENCENT_SMS_APP_ID = 6666666
+#腾讯云短信应用的app_key
+TENCENT_SMS_APP_KEY = "7666666666666666"
+#腾讯云短信签名内容
+TENCENT_SMS_SIGN = "小毛孩"
+
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -122,6 +131,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 try:
-    from .local_setting.py import *
+    from .local_setting import *
 except ImportError:
     pass
