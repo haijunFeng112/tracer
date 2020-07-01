@@ -132,6 +132,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+WHITE_REGEX_URL_LIST = [
+    '/register/',
+    '/send/sms/',
+    '/login/',
+    '/image/code/',
+    '/index/',
+    '/login/sms'
+]
+
 try:
     from .local_setting import *
 except ImportError:

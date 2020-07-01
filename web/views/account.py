@@ -1,6 +1,7 @@
 
 from django.shortcuts import render,HttpResponse,redirect
-
+import uuid
+import datetime
 from web import models
 from web.forms.account import RegisterModelForm,SendSmSForm,LoginSmSForm,LoginForm
 from django.http import JsonResponse
@@ -14,7 +15,21 @@ def register(request):
     form = RegisterModelForm(data=request.POST)
     if form.is_valid():
         #验证通过，写入数据库(密码要密文)
-        form.save()
+        instance = form.save()
+
+        #创建交易记录
+        policy_object =  models.PricePolicy.objects.filter(category=1,title='个人免费版').first()
+
+        models.Transaction.objects.create(
+            status=2,
+            order=str(uuid.uuid4()),
+            user = instance,
+            price_policy=policy_object,
+            count=0,
+            price=0,
+            start_datetime= datetime.datetime.now()
+
+        )
 
         return JsonResponse({'status':True,'data':'/login/'})
 
@@ -69,6 +84,7 @@ def login(request):
 def logout(request):
     request.session.flush()
     return redirect('index')
+
 def image_code(request):
     """生成图片验证码"""
     from io import BytesIO
