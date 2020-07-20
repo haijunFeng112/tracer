@@ -70,6 +70,9 @@ class Project(models.Model):
     creator = models.ForeignKey(verbose_name='创建者',to='UserInfo')
     create_datetime = models.DateTimeField(verbose_name='创建时间',auto_now_add=True)
 
+    bucket = models.CharField(verbose_name='COS桶',max_length=128)
+    region = models.CharField(verbose_name='COS区域',max_length=32)
+
 class ProjectUser(models.Model):
     """项目参与者"""
     user = models.ForeignKey(verbose_name='参与者',to='UserInfo')
@@ -89,3 +92,19 @@ class Wiki(models.Model):
 
     def __str__(self):
         return self.title
+
+class File(models.Model):
+    """文件表"""
+    project = models.ForeignKey(verbose_name='项目',to='Project')
+    file_type_choices = (
+        (1,'文件'),
+        (2,'文件夹')
+    )
+    file_type = models.SmallIntegerField(verbose_name='类型',choices=file_type_choices)
+    name = models.CharField(verbose_name='文件夹名称',max_length=32,help_text='文件/文件夹名')
+    key = models.CharField(verbose_name='文件储存在COS中的key',max_length=128,null=True,blank=True)
+    file_size = models.IntegerField(verbose_name='文件大小',null=True,blank=True)
+    file_path = models.CharField(verbose_name='文件路径',max_length=255,null=True,blank=True)
+    parent = models.ForeignKey(verbose_name='父级目录',to='self',related_name='child',null=True,blank=True)
+    update_user = models.ForeignKey(verbose_name='最近更新者',to='UserInfo')
+    update_datetime = models.DateTimeField(verbose_name='更新时间',auto_now=True)

@@ -74,7 +74,7 @@
                 </div>
                 <div class="col-sm-9 content">
                     {% if wiki_object %}
-                        <div id="previewMarkwodn">
+                        <div id="previewMarkdown">
                             <textarea >{{ wiki_object.content }}</textarea>
                         </div>
 
@@ -115,7 +115,7 @@
 
         function initPreviewMarkdown() {
 
-            editormd.markdownToHTML("previewMarkwodn",{
+            editormd.markdownToHTML("previewMarkdown",{
                htmlDecode: "style,script,iframe"
             });
 
