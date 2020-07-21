@@ -64,7 +64,7 @@ def delete_file(bucket,region,key):
 
     client.delete_object(
         Bucket=bucket,
-        key=key,
+        Key=key,
     )
 
 def delete_file_list(bucket,region,key_list):
@@ -82,3 +82,37 @@ def delete_file_list(bucket,region,key_list):
         Bucket=bucket,
         Delete=objects,
     )
+
+def credential(bucket,region):
+    """获取cos上传临时凭证"""
+
+    from sts.sts import Sts
+
+    config = {
+        #临时秘钥有效时长，单位为秒
+        'duration_seconds':1800,
+        'secret_id':settings.TENCENT_COS_ID,
+        'secret_key':settings.TENCENT_COS_KEY,
+        'bucket':bucket,
+        'region':region,
+        'allow_prefix':'*',
+        'allow_actions':[
+            '*'
+        ]
+    }
+    sts = Sts(config)
+    result_dict = sts.get_credential()
+    return result_dict
+
+def check_file(bucket,region,key):
+    config = CosConfig(Region=region, SecretId=settings.TENCENT_COS_ID, SecretKey=settings.TENCENT_COS_KEY, )
+
+    # 2. 获取客户端对象
+    client = CosS3Client(config)
+
+    data = client.head_object(
+        Bucket=bucket,
+        Key=key,
+    )
+
+    return data

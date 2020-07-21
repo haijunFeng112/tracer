@@ -22,7 +22,7 @@ class PricePolicy(models.Model):
 
     project_num = models.PositiveIntegerField(verbose_name='项目数')
     project_member = models.PositiveIntegerField(verbose_name='项目成员数')
-    project_space = models.PositiveIntegerField(verbose_name='单项目空间')
+    project_space = models.PositiveIntegerField(verbose_name='单项目空间',help_text='G')
     per_file_size = models.PositiveIntegerField(verbose_name='单文件大小(M)')
 
     create_datetime = models.DateTimeField(verbose_name='创建时间',auto_now_add=True)
@@ -63,7 +63,7 @@ class Project(models.Model):
     name = models.CharField(verbose_name='项目名',max_length=32)
     color = models.SmallIntegerField(verbose_name='颜色',choices=COLOR_CHOICES,default=1)
     desc = models.CharField(verbose_name='项目描述',max_length=255,null=True,blank=True)
-    user_space = models.IntegerField(verbose_name='项目已使用空间',default=0)
+    user_space = models.IntegerField(verbose_name='项目已使用空间',default=0,help_text='字节')
     star = models.BooleanField(verbose_name='星标',default=False)
 
     join_count = models.SmallIntegerField(verbose_name='参与人数',default=1)
@@ -103,7 +103,7 @@ class File(models.Model):
     file_type = models.SmallIntegerField(verbose_name='类型',choices=file_type_choices)
     name = models.CharField(verbose_name='文件夹名称',max_length=32,help_text='文件/文件夹名')
     key = models.CharField(verbose_name='文件储存在COS中的key',max_length=128,null=True,blank=True)
-    file_size = models.IntegerField(verbose_name='文件大小',null=True,blank=True)
+    file_size = models.IntegerField(verbose_name='文件大小',null=True,blank=True,help_text='字节')
     file_path = models.CharField(verbose_name='文件路径',max_length=255,null=True,blank=True)
     parent = models.ForeignKey(verbose_name='父级目录',to='self',related_name='child',null=True,blank=True)
     update_user = models.ForeignKey(verbose_name='最近更新者',to='UserInfo')
