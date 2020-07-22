@@ -3,6 +3,7 @@ from web.views import account, home, project
 from web.views import manage
 from web.views import wiki
 from web.views import file
+from web.views import setting
 
 urlpatterns = [
     url(r'^register/$', account.register, name='register'),
@@ -39,7 +40,8 @@ urlpatterns = [
         url(r'^file/post$', file.file_post, name="file_post"),
         url(r'^file/download/(?P<file_id>\d+)$', file.file_download, name="file_download"),
 
-        url(r'^setting/$', manage.setting, name="setting")
+        url(r'^setting/$', setting.setting, name="setting"),
+        url(r'^setting/delete/$', setting.delete, name="setting_delete")
     ]), None, None),
 
 ]

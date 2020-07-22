@@ -3,6 +3,7 @@ from qcloud_cos import CosS3Client
 import sys
 import logging
 from django.conf import settings
+from qcloud_cos.cos_exception import CosServiceError
 
 def create_bucket(bucket,region="ap-guangzhou"):
     """
@@ -116,3 +117,43 @@ def check_file(bucket,region,key):
     )
 
     return data
+
+def delete_bucket(bucket,region):
+    """删除桶"""
+    #删除桶文件、桶碎片、桶
+    config = CosConfig(Region=region, SecretId=settings.TENCENT_COS_ID, SecretKey=settings.TENCENT_COS_KEY, )
+    # 2. 获取客户端对象
+    client = CosS3Client(config)
+
+    try:
+        #删除文件
+        while True:
+            part_objects = client.list_objects(bucket)
+            #检测是否删除完毕
+            contents = part_objects.get('Contents')
+            if not contents:
+                break
+
+            #批量删除
+            objects = {
+                "Quiet": "true",
+                "Object": [{'Key':item["Key"]} for item in contents]
+            }
+            client.delete_objects(bucket,objects)
+
+            if part_objects['IsTruncated'] == 'false':
+                break
+        #找到碎片删除
+        while True:
+            part_uploads = client.list_multipart_uploads(bucket)
+            uploads = part_uploads.get('Upload')
+            if not uploads:
+                break
+            for item in uploads:
+                client.abort_multipart_upload(bucket,item['Key'],item['UploadId'])
+            if part_uploads['IsTruncated'] == 'false':
+                break
+
+        client.delete_bucket(bucket)
+    except CosServiceError as e:
+        pass
